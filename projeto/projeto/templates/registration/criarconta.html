@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+
+
+{% block content %}
+    {% if CREATE_ERRO %}
+      {% for i in CREATE_ERRO %}
+          {% if i == 1 %}
+            <p>Email já exite</p>
+          {% endif %}
+          {% if i == 2 %}
+            <p>CPF já exite</p>
+          {% endif %}
+          {% if i == 3 %}
+            <p>Senhas diferentes</p>
+          {% endif %}
+      {% endfor %}
+    {% endif %}
+    <h1>Criar conta</h1>
+    <form method="post" id="formcriarconta" action={% url "criarconta" %}>
+        {% csrf_token %}
+        <table>
+           <tbody>
+           {% for field in form %}
+               <tr>
+                   <th>
+                       {{ field.label_tag }}
+                   </th>
+                   <td>
+                       {{ field }}
+                       <p>{{ field.errors }}</p>
+                   </td>
+               </tr>
+           {% endfor %}
+           </tbody>
+        </table>
+        <input type="submit" value="Criar"/>
+    </form>
+{% endblock %}

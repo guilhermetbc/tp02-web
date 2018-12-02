@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+{% load render_table from django_tables2 %}
+
+{% block content %}
+    <div style="margin-bottom:50px">
+        <h1>Solicitações em aberto</h1>
+        <hr/>
+        <form action="" method="get">
+            <table>
+                {{ pendentes_filter.form.as_table }}
+            </table>
+            <input type="submit" value="Buscar"/>
+        </form>
+        {% render_table pendentes_table %}
+    </div>
+
+    <div>
+        <h1>Solicitações resolvidas</h1>
+        <hr/>
+        <form action="" method="get">
+            <table>
+                {{ resolvidas_filter.form.as_table }}
+            </table>
+            <input type="submit" value="Buscar"/>
+        </form>
+        {% render_table resolvidas_table %}
+    </div>
+{% endblock %}

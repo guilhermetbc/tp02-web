@@ -1,0 +1,122 @@
+{% extends "base.html" %}
+{% load static %}
+{% block headerextra %}
+    <link rel="stylesheet" href="{% static 'css/cartao.css' %}">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/js/select2.min.js"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/css/select2.min.css" rel="stylesheet"/>
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $(".js-example-basic-single").select2({
+                    placeholder: "Escolha uma nova vacina",
+                    allowClear: true
+                }
+            );
+            $(".datepicker").datepicker();
+        });
+    </script>
+{% endblock %}
+{% block content %}
+
+    <main>
+
+        <input class="cartao-input" id="tab1" type="radio" name="tabs" checked>
+        <label for="tab1">{{ request.user.first_name }}</label>
+        
+        <section id="content1">
+            {% for foo, key in doses.items %}
+                <div class="vacina-column" style="float: left;">
+                    <h2>{{ foo }}</h2>
+                    {% for d in key %}
+
+                        <div class="dose-box">
+                            {% if forloop.last %}
+                                <span style="" class="delete abremodal">&times;</span>
+                                <!-- The Modal -->
+                                <div id="modal-{{ foo }}" class="modal">
+
+                                    <!-- Modal content -->
+                                    <div class="modal-content">
+                                        <span class="close">&times;</span>
+                                        <p>Deseja Remover a ultima dose de {{ foo }}</p>
+                                        <iframe src="{% url 'deletardose' foo d.0.dose %}" frameborder="0"></iframe>
+                                    </div>
+
+                                </div>
+                            {% endif %}
+                            <ul>
+                                <li>
+                                    <p><strong>Dose: </strong>{{ d.0.dose }}</p>
+                                </li>
+                                <li>
+                                    <p><strong>Data: </strong>{{ d.1 }}</p>
+                                </li>
+                                <li>
+                                    <p><strong>Validade: </strong>{{ d.2 }}</p>
+                                </li>
+                            </ul>
+                        </div>
+                        {% if forloop.last and d.3 > forloop.counter %}
+                            <div>
+                                <form method="post" action="{% url 'renovarvacina' %}">
+                                    <div class="fieldWrapper">
+                                        {% csrf_token %}
+
+                                        <input type="hidden" name="{{ formRenova.dose.name }}"
+                                               value="{{ key|length|add:'1' }}">
+                                        <input type="hidden" name="{{ formRenova.rvacina.name }}" value="{{ foo }}">
+                                        <h3 style="text-align: center">Nova Dose</h3>
+                                        <label id="data-vacina"
+                                               for="{{ formRenovar.rdata.id_for_label }}"></label><input
+                                            placeholder="Escolha a data da Vacina" type="text"
+                                            name={{ formRenova.rdata.name }} id="{{ formRenova.rdata.id_for_label }}"
+                                            class="datepicker" required>
+                                        {% if errorRenova %}
+                                            {{ errorRenova }}
+                                        {% endif %}
+                                    </div>
+                                    <input class="renovar" type="submit" name="Renovar" value="Renovar">
+                                </form>
+                            </div>
+                        {% endif %}
+                    {% endfor %}
+
+                    {#                    <a class="renovar">Renovar</a>#}
+                </div>
+            {% endfor %}
+
+            {% if vacinas %}
+                <div class="vacina-column " style="float: left;">
+                    <form method="post" action="{% url 'novavacina' %}">
+                        {% csrf_token %}
+
+                        <label id="label-nova-vacina" for="{{ formNew.vacina.id_for_label }}">
+                            Adicione uma nova vacina
+                            <br>
+                            <select required style="width: 100%;" name="{{ formNew.vacina.name }}"
+                                    class="js-example-basic-single js-states form-control"
+                                    id="{{ formNew.vacina.id_for_label }}">
+                                <option></option>
+                                {% for vac in vacinas %}
+                                    <option value="{{ vac.pk }}">{{ vac.nome }}</option>
+                                {% endfor %}
+                            </select>
+                            {{ formNew.vacina.errors }}
+                        </label>
+                        <div class="fieldWrapper">
+
+                            <label id="data-vacina" for="{{ formNew.data.id_for_label }}"></label><input
+                                placeholder="Escolha a data da Vacina" type="text"
+                                name="{{ formNew.data.name }}" id="{{ formNew.data.id_for_label }}"
+                                class="datepicker" required>
+                            {% if errorAdd %}
+                                {{ errorAdd }}
+
+                            {% endif %}
+                        </div>
+                        <input type="submit" class="renovar" value="Adicionar"/>
+                    </form>
+                </div>
+            {% endif %}
+        </section>
+    </main>
+{% endblock %}

@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+{% load render_table from django_tables2 %}
+
+{% block content %}
+    <h1>Sua Conta</h1>
+    <table>
+        <tbody>
+            <tr>
+               <th>
+                   <label>Nome</label>
+               </th>
+                <td>
+                    {{ request.user.first_name }}
+                </td>
+            </tr>
+            <tr>
+               <th>
+                   <label>Email</label>
+               </th>
+                <td>
+                    {{ request.user.email }}
+                </td>
+            </tr>
+            <tr>
+               <th>
+                   <label>CPF</label>
+               </th>
+                <td>
+                    {{ request.user.username }}
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <a href="{% url 'editarconta' %}"><input type="submit" value="Editar"></a>
+    <a href=" {% url 'deletarconta' %}"><input type="submit" value="Excluir"></a>
+    <h1><br>Criar depentes</h1>
+    <form method="post" id="formdependente" action={% url 'gerenciarconta' %}>
+        {% csrf_token %}
+        <table>
+        {{ form.as_table }}
+        </table>
+        <input type="submit" value="Criar"/>
+    </form>
+    <h1> <br>Dependentes </h1>
+    {% render_table dependentes_table %}
+
+{% endblock %}
