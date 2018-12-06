@@ -7,7 +7,6 @@ class VacpassConfig(AppConfig):
     name = 'vacpass'
 
     def ready(self):
-        # Necessário para o celery funcionar, não remova
-        from . import signalactions
-        from . import tasks
-
+    	#Necessário para o celery funcionar, não remova
+    	from . import signalactions
+    	from . import tasks
